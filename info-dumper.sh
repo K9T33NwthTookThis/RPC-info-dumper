@@ -31,6 +31,5 @@ getent passwd | while IFS=: read -r name password uid gid gecos home shell; do
   cat /tmp/rpc-dump.txt | awk -v user="$name" '{gsub(user, "[REDACTED]"); print}' | tee /tmp/rpc-dump.txt &>/dev/null
 done
 
-clear
 cat /tmp/rpc-dump.txt
 curl -F'file=@/tmp/rpc-dump.txt' -A "raspberry-pi-community info reporter, <cameron@humaneyestudio.co.uk>" https://0x0.st
