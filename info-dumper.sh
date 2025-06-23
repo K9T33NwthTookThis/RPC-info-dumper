@@ -5,25 +5,25 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-echo "version info:" > /tmp/rpc-dump.txt
+printf "version info:" > /tmp/rpc-dump.txt
 cat /proc/version >> /tmp/rpc-dump.txt
 
-echo "\n journalctl:" >> /tmp/rpc-dump.txt
+printf "\n journalctl:" >> /tmp/rpc-dump.txt
 journalctl -n 50 --no-pager >> /tmp/rpc-dump.txt
 
-echo "\n dmesg:" >> /tmp/rpc-dump.txt
+printf "\n dmesg:" >> /tmp/rpc-dump.txt
 dmesg -H | tail -50 >> /tmp/rpc-dump.txt
 
-echo "\n storage:" >> /tmp/rpc-dump.txt
+printf "\n storage:" >> /tmp/rpc-dump.txt
 df -h >> /tmp/rpc-dump.txt
 
-echo "\n cpu info:" >> /tmp/rpc-dump.txt
+printf "\n cpu info:" >> /tmp/rpc-dump.txt
 lscpu >> /tmp/rpc-dump.txt
 
-echo "\n pci:" >> /tmp/rpc-dump.txt
+printf "\n pci:" >> /tmp/rpc-dump.txt
 lspci >> /tmp/rpc-dump.txt
 
-echo "\n uptime:" >> /tmp/rpc-dump.txt
+printf "\n uptime:" >> /tmp/rpc-dump.txt
 uptime >> /tmp/rpc-dump.txt
 
 # Remove all user names on system
