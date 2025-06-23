@@ -1,0 +1,36 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+echo "version info:" > /tmp/rpc-dump.txt
+cat /proc/version >> /tmp/rpc-dump.txt
+
+echo "\n journalctl:" >> /tmp/rpc-dump.txt
+journalctl -n 50 --no-pager >> /tmp/rpc-dump.txt
+
+echo "\n dmesg:" >> /tmp/rpc-dump.txt
+dmesg -H | tail -50 >> /tmp/rpc-dump.txt
+
+echo "\n storage:" >> /tmp/rpc-dump.txt
+df -h >> /tmp/rpc-dump.txt
+
+echo "\n cpu info:" >> /tmp/rpc-dump.txt
+lscpu >> /tmp/rpc-dump.txt
+
+echo "\n pci:" >> /tmp/rpc-dump.txt
+lspci >> /tmp/rpc-dump.txt
+
+echo "\n uptime:" >> /tmp/rpc-dump.txt
+uptime >> /tmp/rpc-dump.txt
+
+# Remove all user names on system
+getent passwd | while IFS=: read -r name password uid gid gecos home shell; do
+  cat /tmp/rpc-dump.txt | awk -v user="$name" '{gsub(user, "[REDACTED]"); print}' | tee /tmp/rpc-dump.txt &>/dev/null
+done
+
+clear
+cat /tmp/rpc-dump.txt
+curl -F'file=@/tmp/rpc-dump.txt' -A "raspberry-pi-community info reporter, <cameron@humaneyestudio.co.uk>" https://0x0.st
