@@ -6,6 +6,8 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 printf "version info:" > /tmp/rpc-dump.txt
+# pi model/device
+uname -a >> /tmp/rpc-dump.txt
 cat /proc/version >> /tmp/rpc-dump.txt
 
 printf "\n journalctl:" >> /tmp/rpc-dump.txt
