@@ -30,6 +30,11 @@ uptime >> /tmp/rpc-dump.txt
 
 # Remove all user names on system
 getent passwd | while IFS=: read -r name password uid gid gecos home shell; do
+  # System accounts shouldn't be redacted, as well as some user accounts
+  if (( $uid < 1000 )); then
+    continue
+  fi
+
   cat /tmp/rpc-dump.txt | awk -v user="$name" '{gsub(user, "[REDACTED]"); print}' | tee /tmp/rpc-dump.txt &>/dev/null
 done
 
