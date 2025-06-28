@@ -28,7 +28,7 @@ lspci >> /tmp/rpc-dump.txt
 printf "\n uptime:" >> /tmp/rpc-dump.txt
 uptime >> /tmp/rpc-dump.txt
 
-# Remove all user names on system
+# Remove non system user names on system
 getent passwd | while IFS=: read -r name password uid gid gecos home shell; do
   # System accounts shouldn't be redacted, as well as some user accounts
   if (( $uid < 1000 )); then
