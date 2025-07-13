@@ -1,42 +1,54 @@
 #!/bin/bash
 
 if [[ $EUID -ne 0 ]]; then
-   printf "This script must be run as root"
-   exit 1
+  printf "This script must be run as root"
+  exit 1
 fi
 
-printf "version info:" > /tmp/rpc-dump.txt
-# pi model/device
-uname -a >> /tmp/rpc-dump.txt
-cat /proc/version >> /tmp/rpc-dump.txt
+printf "version info:\n" >/tmp/rpc-dump.txt
+{
+  # pi model/device
+  uname -a
+  printf "\n"
+  cat /proc/version
 
-printf "\n journalctl:" >> /tmp/rpc-dump.txt
-journalctl -n 50 --no-pager >> /tmp/rpc-dump.txt
+  printf "\n\n journalctl:\n"
+  journalctl -n 50 --no-pager
 
-printf "\n dmesg:" >> /tmp/rpc-dump.txt
-dmesg -H | tail -50 >> /tmp/rpc-dump.txt
+  printf "\n\n dmesg:\n"
+  dmesg -H | tail -50
 
-printf "\n storage:" >> /tmp/rpc-dump.txt
-df -h >> /tmp/rpc-dump.txt
+  printf "\n\n storage:\n"
+  df -h
 
-printf "\n cpu info:" >> /tmp/rpc-dump.txt
-lscpu >> /tmp/rpc-dump.txt
+  printf "\n\n cpu info:\n"
+  lscpu
 
-printf "\n pci:" >> /tmp/rpc-dump.txt
-lspci >> /tmp/rpc-dump.txt
+  printf "\n\n pci:\n"
+  lspci
 
-printf "\n uptime:" >> /tmp/rpc-dump.txt
-uptime >> /tmp/rpc-dump.txt
+  printf "\n\n uptime:\n"
+  uptime
+} >>/tmp/rpc-dump.txt
 
 # Remove non system user names on system
-getent passwd | while IFS=: read -r name password uid gid gecos home shell; do
+getent passwd | while IFS=: read -r name _ uid _ _ _ _; do
   # System accounts shouldn't be redacted, as well as some user accounts
-  if (( $uid < 1000 )); then
+  if ((uid < 1000)); then
     continue
   fi
 
-  cat /tmp/rpc-dump.txt | awk -v user="$name" '{gsub(user, "[REDACTED]"); print}' | tee /tmp/rpc-dump.txt &>/dev/null
+  awk -v user="$name" '{gsub(user, "[REDACTED]"); print}' /tmp/rpc-dump.txt | tee /tmp/rpc-dump-stripped.txt &>/dev/null
 done
 
-cat /tmp/rpc-dump.txt
-curl -F'file=@/tmp/rpc-dump.txt' -A "raspberry-pi-community info reporter, <cameron@humaneyestudio.co.uk>" https://0x0.st
+# cat /tmp/rpc-dump-stripped.txt
+rm /tmp/rpc-dump.txt
+
+printf "                                                          
+                                                          __ 
+ _____ _____ _____ ____     _____ _____ __    _____ _ _ _|  |
+| __  |   __|  _  |    \   | __  |   __|  |  |     | | | |  |
+|    -|   __|     |  |  |  | __ -|   __|  |__|  |  | | | |__|
+|__|__|_____|__|__|____/   |_____|_____|_____|_____|_____|__|\n"
+printf "\nSend this link to the person who asked you to run this:\n"
+curl -F'file=@/tmp/rpc-dump-stripped.txt' -A "raspberry-pi-community info reporter, <cameron@humaneyestudio.co.uk>" https://0x0.st
