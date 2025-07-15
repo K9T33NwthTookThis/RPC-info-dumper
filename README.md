@@ -9,5 +9,9 @@ The script is also available as a redirect from https://dukesyndicate.org/info-d
 | Transfer method | Command                                                           |
 |-----------------|-------------------------------------------------------------------|
 | curl            | `curl -sSL https://dukesyndicate.org/info-dumper.sh \| sudo bash` |
-| wget            | `wget -qO- https://dukesyndicate.org/info-dumper.sh \| sudo bash` |
+
+Deprecated transfer methods:
+| Transfer method | Command                                                           | Deprecation reason          |
+|-----------------|-------------------------------------------------------------------|-----------------------------|
+| wget            | `wget -qO- https://dukesyndicate.org/info-dumper.sh \| sudo bash` | Program now depends on curl |
 
