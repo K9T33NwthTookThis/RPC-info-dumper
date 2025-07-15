@@ -10,4 +10,4 @@ curl -sSL https://raw.githubusercontent.com/K9T33NwthTookThis/RPC-info-dumper/re
 chmod +x /tmp/rpc-info-dumper.sh
 
 # Launch that thing
-sudo bash /tmp/rpc-info-dumper.sh
+exec sudo bash /tmp/rpc-info-dumper.sh </dev/tty
