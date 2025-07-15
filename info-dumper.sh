@@ -41,8 +41,8 @@ getent passwd | while IFS=: read -r name _ uid _ _ _ _; do
   awk -v user="$name" '{gsub(user, "[REDACTED]"); print}' /tmp/rpc-dump.txt | tee /tmp/rpc-dump-stripped.txt &>/dev/null
 done
 
-read -p "Print output? [y, N]: " -t 8 output
-if [$output == y]; then
+read -p -r "Print output? [y, N]: " -t 8 output
+if [[ $output == y ]]; then
   cat /tmp/rpc-dump-stripped.txt
 fi
 
